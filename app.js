@@ -1,7 +1,11 @@
-const userRoutes = require('./Routes/userRoutes');
+const authRoutes = require('./Routes/authRoutes');
+const ReviewRoutes = require('./Routes/reviewRoutes');
+const adminRoutes = require('./Routes/AdminRoutes')
 const express = require('express');
 const app = express();
 app.use(express.json());
-app.use('/user',userRoutes);
+app.use('/user',authRoutes);
+app.use('/admin',adminRoutes);
 
+app.use('/review',ReviewRoutes);
 module.exports = app;

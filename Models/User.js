@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { validate } = require('./Review');
 
 const Schema =  mongoose.Schema;
 const userSchema = new Schema({
@@ -7,7 +6,6 @@ const userSchema = new Schema({
         type: String ,
         required: true,
         length : 25,
-
     },
     email : {
         type : String ,
@@ -50,7 +48,17 @@ const userSchema = new Schema({
         type : String,
         required : true,
         length:100
-    }
+    },
+    role : {
+        type : String,
+        required : true,
+        enum : ['user','admin','provider'],
+        default : 'user',
+    },
+    isBlocked : {
+        type : Boolean,
+        default : false,
+    },
 });
 
 const User = mongoose.model('User',userSchema);
