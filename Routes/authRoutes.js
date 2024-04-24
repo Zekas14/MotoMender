@@ -5,5 +5,6 @@ router.post('/register',authServices.register);
 router.post('/login',authServices.logIn);
 router.delete('/deleteAccount/:userId',authServices.deleteAccount);
 router.put('/updateAccount/:userId',authServices.updateAccount);
-
+router.post('/forgetPassword',authServices.forgetPassword);
+router.patch('/resetPassword',authServices.resetPassword);
 module.exports= router;

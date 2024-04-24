@@ -38,13 +38,14 @@ const deleteUser = async (req, res) => {
 };
 const blockUser = async (req,res) => {
     const id = req.params.userId;   
-    const {isBlocked} = req.body;
     try {
-        const user = await User.findByIdAndUpdate(id,{isBlocked : isBlocked});
+        const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        res.json({ message: 'Account Blocked successfully'});
+        await user.updateOne({isBlocked: !user.isBlocked})
+        
+        res.json({ message: `Account ${user.isBlocked ? "Unblocked" : "Blocked" } successfully`});
     } catch (error) {
         console.error('Error updating account:', error);
         res.status(500).json({ message: 'Internal Server Error' });
