@@ -62,6 +62,9 @@ async function validatePassword(email,password){
 const logIn = async (req,res)=>{
     try {
         let user = new User(req.body);
+        if(user.isBlocked) {
+            return res.json({message : "User Is Blocked "});
+        }
         if (await validatePassword(user.email, user.password)) {
             const token =createToken(user._id);
             user = await User.findOne({ email: user.email });
