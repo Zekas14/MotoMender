@@ -1,7 +1,5 @@
 const nodemailer = require("nodemailer");
 
-<<<<<<< HEAD
-
 const transporter =
  nodemailer.createTransport({
     service: 'gmail',
@@ -18,7 +16,6 @@ transporter.verify(function(error, success) {
     } else {
         console.log("Transporter is ready to send emails");
     }
-=======
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -34,7 +31,7 @@ transporter.verify(function (error, success) {
   } else {
     console.log("Transporter is ready to send emails");
   }
->>>>>>> a38d7e4cde7c54ed6600580351ecb9d7cc037026
 });
+})
 
 module.exports = transporter;
