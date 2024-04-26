@@ -1,5 +1,33 @@
+const { filter } = require("lodash");
 const Product = require("../Models/productModel");
 const APIProductFeatures = require("../utils/APIProductFeatures");
+const multer = require("multer");
+const fs = require("fs");
+
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/imgs/products");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1];
+    cb(null, `product-${Date.now()}.${ext}`);
+  },
+});
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Not an image! Please upload only images."), false);
+  }
+};
+
+const imgUpload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+exports.uploadProductImg = imgUpload.single("photo");
 
 exports.getProduct = async (req, res) => {
   try {
@@ -47,10 +75,21 @@ exports.getProduct = async (req, res) => {
     });
   }
 };
-
 exports.createProduct = async (req, res) => {
   try {
-    const product = await Product.create(req.body);
+    const filteredObject = filterObject(
+      req.body,
+      "name",
+      "description",
+      "price",
+      "category"
+    );
+    if (req.file) {
+      filteredObject.imagePath = `http://${req.get("host")}/imgs/products/${
+        req.file.filename
+      }`;
+    }
+    const product = await Product.create(filteredObject);
 
     delete product["__v"];
     res.status(201).json({
@@ -67,16 +106,39 @@ exports.createProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const filteredObject = filterObject(
+      req.body,
+      "name",
+      "description",
+      "price",
+      "category"
+    );
+    if (req.file) {
+      filteredObject.imagePath = `http://${req.get("host")}/imgs/products/${
+        req.file.filename
+      }`;
+    }
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      filteredObject,
+      {
+        runValidators: true,
+      }
+    );
     if (!product) {
       return res.status(404).json({
         status: "fail",
         message: "Product not found",
       });
     }
+    fs.unlink(
+      `public/imgs/products/${product.imagePath.split("/")[5]}`,
+      (err) => {
+        if (err) {
+          console.log(err);
+        }
+      }
+    );
     res.status(200).json({
       status: "success",
       data: {
@@ -110,3 +172,11 @@ exports.deleteProduct = async (req, res) => {
     });
   }
 };
+
+function filterObject(obj, ...allowedFields) {
+  const newObj = {};
+  Object.keys(obj).forEach((key) => {
+    if (allowedFields.includes(key)) newObj[key] = obj[key];
+  });
+  return newObj;
+}

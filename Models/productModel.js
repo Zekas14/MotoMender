@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const productSchema = mongoose.Schema({
   productId: {
@@ -37,7 +38,13 @@ const productSchema = mongoose.Schema({
   },
   imagePath: {
     type: String,
-    required: true,
+    default: "https://via.placeholder.com/150",
+    validator: {
+      validator: function (path) {
+        return validator.isURL(path);
+      },
+      message: "image path must be a valid URL",
+    },
   },
   ratingAverage: {
     type: Number,
