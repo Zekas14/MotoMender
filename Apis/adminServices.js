@@ -45,7 +45,7 @@ const blockUser = async (req,res) => {
         }
         await user.updateOne({isBlocked: !user.isBlocked})
         
-        res.json({ message: `Account ${user.isBlocked ? "Unblocked" : "Blocked" } successfully`});
+        res.json({ message: `${user.name} ${user.isBlocked ? "Unblocked" : "Blocked" }`});
     } catch (error) {
         console.error('Error updating account:', error);
         res.status(500).json({ message: 'Internal Server Error' });
