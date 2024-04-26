@@ -11,5 +11,4 @@ productRouter
   .route("/:id")
   .patch(productController.uploadProductImg, productController.updateProduct)
   .delete(productController.deleteProduct);
-
 module.exports = productRouter;
