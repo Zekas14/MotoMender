@@ -3,10 +3,10 @@ const jwt = require('jsonwebtoken');
 const transporter = require('../utils/transport')
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const {upload,multer} = require('../utils/multer')
 
-// Generate a random secret key
 const generateSecretKey = () => {
-  return crypto.randomBytes(32).toString('hex'); // Generate a 256-bit (32-byte) key and convert it to hexadecimal format
+  return crypto.randomBytes(16).toString('hex');
 };
 const createToken = (payload)=>
   jwt.sign({userId : payload},generateSecretKey(),{
@@ -39,7 +39,30 @@ const register = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+//upload Profile image
+const uploadProfileImage = (req, res) => {
+    upload(req, res, async function(err) {
+        if (err instanceof multer.MulterError) {
+            console.error(err)
+            return res.status(500).json({ error: "File upload error",  });
+        } else if (err) {
+            return res.status(500).json({ error: err.message });
+        }
 
+        try {
+            const user = await User.findById(req.params.userId);
+            if (!user) {
+                return res.status(404).json({ error: "User not found" });
+            }
+            user.profileImage = req.file.path;
+            await user.save();
+            res.json({ message: "Profile image uploaded successfully", user });
+        } catch (error) {
+            console.error("Error uploading profile image:", error);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    });
+};
 // Log in Process
 async function validateEmail(email){
     try {
@@ -188,4 +211,5 @@ module.exports = {
     updateAccount,
     resetPassword,
     forgetPassword,
+    uploadProfileImage
 };
