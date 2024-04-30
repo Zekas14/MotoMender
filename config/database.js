@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const url =
-  "mongodb+srv://MotoMenderDb:RuqFzS4Pj1rzBE1B@project.tmqmpov.mongodb.net/?retryWrites=true&w=majority&appName=Project";
+const url = process.env.MONGO_ATLAS_URI;
+// const url = process.env.MONGO_LOCAL_URI;
 function connectToDB() {
   mongoose.connect(url).then(() => {
     console.log("Connected Successfully");
