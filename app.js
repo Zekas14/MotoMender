@@ -2,6 +2,7 @@ const authRoutes = require("./Routes/authRoutes");
 const ReviewRoutes = require("./Routes/reviewRoutes");
 const adminRoutes = require("./Routes/AdminRoutes");
 const productRouter = require("./Routes/productRoutes");
+const orderRouter = require('./Routes/order_routes')
 const express = require("express");
 const path = require('path')
 const app = express();
@@ -12,5 +13,6 @@ app.use("/user", authRoutes);
 app.use("/admin", adminRoutes);
 app.use("/products", productRouter);
 app.use("/review", ReviewRoutes);
+app.use("/orders",orderRouter)
 
 module.exports = app;
