@@ -20,7 +20,10 @@ const register = async (req, res) => {
     let user = await User.findOne({ email: req.body.email });
 
     if (user) {
-      return res.status(400).json({ error: "Email is already in use." });
+      return res.status(400).json({
+        status:400,
+         message: "Email is already in use." 
+        });
     }
     user = new User({
       name: req.body.name,
@@ -33,12 +36,13 @@ const register = async (req, res) => {
     console.log(user.isModified("password"));
     await user.save();
     res.json({
+      status :200,
       message: "User Registered Successfully",
       user,
       token: token,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ status : 500,message: error.message });
   }
 };
 //upload Profile image
@@ -93,15 +97,17 @@ const logIn = async (req, res) => {
         return res.json({ message: "User Is Blocked " });
       }
       console.log();
-      res.json({ message: "logged in Successfully", user, token });
+      res.status(200).json({ status:200,message: "logged in Successfully", user, token });
     } else {
       res.status(404).send({
+        status: 404,
         message: "Wrong Email Or Password",
       });
     }
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).send({
+      status: 500,
       message: "Internal Server Error",
     });
   }
