@@ -141,12 +141,13 @@ const updateAccount = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ status : 404,message: "User not found" });
     }
     res.json({ message: "Account updated successfully", user });
   } catch (error) {
     console.error("Error updating account:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({status: 500,
+       message: "Internal Server Error" });
   }
 };
 const generateOTP = () => {
@@ -157,9 +158,12 @@ const generateOTP = () => {
 const forgetPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email :email });
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ 
+        status : 404,
+        message: "User not found"
+       });
     }
     const token = crypto.randomBytes(20).toString("hex");
     const otp = generateOTP();
@@ -175,10 +179,13 @@ const forgetPassword = async (req, res) => {
       html: `Your OTP for password reset is: ${otp}. This OTP is valid for 5 minutes. Do not share it with anyone.`,
     });
 
-    res.json({ message: "OTP has been sent to your email" });
+    res.json({ message: "OTP has been sent to your email", });
   } catch (error) {
     console.error("Error sending password reset email:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ 
+      status: 500,
+      message : "Internal Server Error"
+     });
   }
 };
 //reset Password
