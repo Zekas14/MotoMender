@@ -17,6 +17,7 @@ const userSchema = new Schema({
       },
       message: (props) => `${props.value} is not a valid email address!`,
     },
+    
   },
   password: {
     type: String,
@@ -60,6 +61,9 @@ const userSchema = new Schema({
     type: String,
     default:
       "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+  },
+  emailVerify: {
+    type: String,
   },
   resetPasswordOTP: {
     type: String,

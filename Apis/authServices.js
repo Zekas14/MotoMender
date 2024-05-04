@@ -1,11 +1,23 @@
 const User = require("../Models/User");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
+const dns = require('dns');
 const transporter = require("../utils/transport");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const cron = require('node-cron');
 const { upload, multer } = require("../utils/multer");
-
+async function isValidDomain(domain) {
+  return new Promise((resolve) => {
+      dns.resolve(domain, 'MX', (err) => {
+          if (err) {
+              resolve(false); 
+          } else {
+              resolve(true); 
+          }
+      });
+  });
+};
 const generateSecretKey = () => {
   return crypto.randomBytes(16).toString("hex");
 };
@@ -14,37 +26,72 @@ const createToken = (payload) => {
     expiresIn: "3h",
   });
 };
+ const signUpWithGoogle = async(req,res)=>{
+  try {
+    console.log("test");
+    res.send({
+      message : "AZ"
+    })
+  } catch (error) {
+    
+  }
+ }
 // Register Process
 const register = async (req, res) => {
   try {
-    let user = await User.findOne({ email: req.body.email });
-
+    const userEmail = req.body.email;
+    const domain = userEmail.split('@')[1];
+    const isDomainValid = await isValidDomain(domain);
+    if (!isDomainValid) {
+      return res.status(400).json({
+        status: 400,
+        message: "Invalid email domain."
+      });
+    }
+    let user = await User.findOne({ email: userEmail });
     if (user) {
       return res.status(400).json({
-        status:400,
-         message: "Email is already in use." 
-        });
+        status: 400,
+        message: "Email is already in use." 
+      });
     }
+    const verifyEmail = generateOTP();
+    transporter.sendMail({
+      from: "ahmedzrks123@gmail.com",
+      to: userEmail,
+      subject: "Verifying Email Request",
+      html: `Your Code for Verifying Email is: ${verifyEmail}. This Code is valid for 5 minutes. Do not share it with anyone.`,
+    });
+
     user = new User({
       name: req.body.name,
       phone: req.body.phone,
       email: req.body.email,
       address: req.body.address,
+      emailVerify: verifyEmail
     });
     const token = createToken(user._id);
     user.password = req.body.password;
     console.log(user.isModified("password"));
     await user.save();
+    cron.schedule('*/30 * * * *', async () => {
+      await User.updateOne({ _id: user._id }, { $unset: { emailVerify: 1 } });
+    }, {
+      scheduled: true,
+      timezone: 'Egypt/Cairo' 
+    });
     res.json({
-      status :200,
-      message: "User Registered Successfully",
+      status: 200,
+      message: "Verification code sent to your email. Please check and verify.",
       user,
       token: token,
     });
   } catch (error) {
-    res.status(500).json({ status : 500,message: error.message });
+    res.status(500).json({ status: 500, message: error.message });
   }
 };
+
+
 //upload Profile image
 const uploadProfileImage = (req, res) => {
   upload(req, res, async function (err) {
@@ -188,6 +235,7 @@ const forgetPassword = async (req, res) => {
      });
   }
 };
+
 //reset Password
 const resetPassword = async (req, res) => {
   try {
@@ -276,6 +324,7 @@ module.exports = {
   forgetPassword,
   uploadProfileImage,
   updatePassword,
+  signUpWithGoogle,
   protect,
   retrictTo,
 };
