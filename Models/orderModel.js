@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Product = require('./productModel');
+const { ProductSchema, ProductModel } = require('./productModel');
 
 const orderSchema = new mongoose.Schema({
     orderId: {
@@ -17,32 +17,7 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: [true, 'BuyerId is required'],
     },
-    products: [{
-        productCode: {
-            type: String,
-            required: true
-        },
-        title: {
-            type: String,
-            required: true
-        },
-        sellerId: {
-            type: String,
-            required: [true, "SellerId is required"]
-        },
-        imgUrl: {
-            type: String,
-            required: [true, "imgUrl is required"]
-        },
-        price: {
-            type: Number,
-            required: [true, 'price is required'],
-        },
-        quantity: {
-            type: Number,
-            required: [true, 'Product Quantity is required']
-        },
-    }]
+    products: [ProductSchema]
 });
 
 const Order = mongoose.model('Order', orderSchema);
