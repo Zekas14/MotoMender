@@ -32,8 +32,7 @@ exports.getAllOrders =async (req,res) => {
         .paginate();
 
        
-        const query = await features.query;
-        const orders= query;
+        const orders=  await features.query;
         
         res.status(200).json({
             status: 'Success',

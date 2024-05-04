@@ -10,7 +10,7 @@ const orderSchema = new mongoose.Schema({
         alias: "_id",
     },
     orderDate: {
-        type: Date,
+        type: Date, 
         default: Date.now
     },
     buyerId: {
