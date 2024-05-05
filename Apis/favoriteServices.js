@@ -51,7 +51,15 @@ exports.addToFavorites = async (req, res) => {
 
     user.favorites = user.favorites.filter(id => id.toString() !== productId.toString());
     await user.save();
-
+    res.status(200).json(
+      {
+        status : 200,
+        massage : "Product removed to favorites",
+        data : {
+          user
+        }
+      }
+    )
     return user;
   } catch (error) {
     throw new Error('Error removing product from favorites: ' + error.message);
