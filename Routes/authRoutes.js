@@ -4,6 +4,7 @@ const authServices = require("../Apis/authServices");
 const router = express.Router();
 router.post("/register", authServices.register);
 
+router.patch('/verfiyEmail',authServices.emailVerfied);
 router.post("/forgetPassword", authServices.forgetPassword);
 router.patch("/resetPassword", authServices.resetPassword);
 router.post("/login", authServices.logIn);

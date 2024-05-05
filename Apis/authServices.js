@@ -26,6 +26,31 @@ const createToken = (payload) => {
     expiresIn: "3h",
   });
 };
+
+
+const emailVerfied = async (req, res) => {
+  try {
+    let user = await User.findOne({ email: req.body.email });
+    if (user) {
+      user.isVerified = true;
+      await user.save(); 
+      res.status(200).json({
+        message: `Email Verified Successfuly`
+      });
+    } else {
+      res.status(404).json({
+        status: 404,
+        message: "User not found"
+      });
+    }
+  } catch (e) {
+    res.status(500).json({
+      status: 500,
+      message: e.message
+    });
+  }
+}
+
  const signUpWithGoogle = async(req,res)=>{
   try {
     console.log("test");
@@ -91,6 +116,7 @@ const register = async (req, res) => {
 };
 
 
+
 //upload Profile image
 const uploadProfileImage = (req, res) => {
   upload(req, res, async function (err) {
@@ -143,13 +169,13 @@ const logIn = async (req, res) => {
       if(!isVerified(user)){
         return res.status(400).json({
           status : 400,
-          message : "Email is Not Verified"
+          message : "Please Verfiy your Email"
         })
       }
       const token = createToken(user._id);
       console.log(jwt.decode(token));
       if (user.isBlocked) {
-        return res.json({ message: "User Is Blocked " });
+        return res.json({status: 404, message: "User Is Blocked " });
       }
       console.log();
       res.status(200).json({ status:200,message: "logged in Successfully", user, token });
@@ -335,4 +361,5 @@ module.exports = {
   signUpWithGoogle,
   protect,
   retrictTo,
+  emailVerfied
 };
