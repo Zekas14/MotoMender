@@ -8,7 +8,9 @@ exports.getAllFavoriteProduct = async (req, res) => {
           return res.status(404).json({ message: 'User not found' });
         }
         const favoriteProducts = user.favorites;    
-        res.status(200).json(favoriteProducts);
+        res.status(200).json({
+          products : favoriteProducts
+        });
     } catch (error) {
       res.status(500).json({ message: 'Error fetching favorite products for user' });
     }
@@ -34,7 +36,7 @@ exports.addToFavorites = async (req, res) => {
   } catch (error) {
     res.status(500).json({
         status : 500,
-       error: error.message
+       message: error.message
     });
   }
 };
