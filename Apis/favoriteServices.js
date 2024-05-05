@@ -62,7 +62,6 @@ exports.addToFavorites = async (req, res) => {
         }
       }
     )
-    return user;
   } catch (error) {
     throw new Error('Error removing product from favorites: ' + error.message);
   }
