@@ -28,8 +28,6 @@ const createToken = (payload) => {
 };
 
 
-// Assuming you have a User model defined
-const User = require('./models/user');
 
 const emailVerified = async (req, res) => {
   try {
