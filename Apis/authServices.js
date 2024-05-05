@@ -28,14 +28,21 @@ const createToken = (payload) => {
 };
 
 
-const emailVerfied = async (req, res) => {
+// Assuming you have a User model defined
+const User = require('./models/user');
+
+const emailVerified = async (req, res) => {
   try {
-    let user = await User.findOne({ email: req.body.email });
+    const userEmail = req.body.email;
+
+    const user = await User.findOneAndUpdate(
+      { email: userEmail }, 
+      { isVerified: true }, 
+    );
+
     if (user) {
-      user.isVerified = true;
-      await user.save(); 
       res.status(200).json({
-        message: `Email Verified Successfuly`
+        message: `Email Verified Successfully`
       });
     } else {
       res.status(404).json({
@@ -43,13 +50,14 @@ const emailVerfied = async (req, res) => {
         message: "User not found"
       });
     }
-  } catch (e) {
+  } catch (error) {
     res.status(500).json({
       status: 500,
-      message: e.message
+      message: error.message
     });
   }
 }
+
 
  const signUpWithGoogle = async(req,res)=>{
   try {
@@ -387,5 +395,5 @@ module.exports = {
   signUpWithGoogle,
   protect,
   retrictTo,
-  emailVerfied
+  emailVerified
 };
