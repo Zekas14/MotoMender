@@ -15,7 +15,7 @@ router.use(authServices.protect);
 router.use(authServices.retrictTo("admin"));
 
 router.delete("/deleteAccount/:userId", authServices.deleteAccount);
-router.put("/updateAccount/:userId", authServices.updateAccount);
+router.put("/updateAccount", authServices.updateAccount);
 router.use(authServices.retrictTo("admin", "user"));
 
 router.post("/uploadProfileImage/:userId", authServices.uploadProfileImage);

@@ -210,7 +210,6 @@ const deleteAccount = async (req, res) => {
 
 // Update Account
 const updateAccount = async (req, res) => {
-  const id = req.params.userId;
   const { name, phone, address } = req.body;
 
   try {
@@ -218,6 +217,7 @@ const updateAccount = async (req, res) => {
       email: req.body.email,
       name: req.body.name,
       phone: req.body.phone,
+      isVerified: req.body.isVerified
     });
 
     if (!user) {
