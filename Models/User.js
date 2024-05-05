@@ -65,6 +65,10 @@ const userSchema = new Schema({
   emailVerify: {
     type: String,
   },
+  isVerified:{
+    type : Boolean,
+    default : false
+  },
   resetPasswordOTP: {
     type: String,
   },

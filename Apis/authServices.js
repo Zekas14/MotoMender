@@ -133,10 +133,19 @@ async function validatePassword(email, password) {
     return false;
   }
 }
+const isVerified= (user)=>{
+  return user.isVerified;
+}
 const logIn = async (req, res) => {
   try {
     if (await validatePassword(req.body.email, req.body.password)) {
       let user = await User.findOne({ email: req.body.email });
+      if(!isVerified(user)){
+        return res.status(400).json({
+          status : 400,
+          message : "Email is Not Verified"
+        })
+      }
       const token = createToken(user._id);
       console.log(jwt.decode(token));
       if (user.isBlocked) {
