@@ -56,7 +56,7 @@ exports.addToFavorites = async (req, res) => {
     res.status(200).json(
       {
         status : 200,
-        massage : "Product removed to favorites",
+        massage : "Product removed from favorites",
         data : {
           user
         }
