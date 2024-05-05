@@ -78,7 +78,6 @@ const register = async (req, res) => {
       await User.updateOne({ _id: user._id }, { $unset: { emailVerify: 1 } });
     }, {
       scheduled: true,
-      timezone: 'Egypt/Cairo' 
     });
     res.json({
       status: 200,
