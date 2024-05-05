@@ -142,6 +142,7 @@ const uploadProfileImage = (req, res) => {
   });
 };
 // Log in Process
+
 async function validateEmail(email) {
   try {
     let user = await User.findOne({ email: email });
@@ -162,20 +163,21 @@ async function validatePassword(email, password) {
 const isVerified= (user)=>{
   return user.isVerified;
 }
+
 const logIn = async (req, res) => {
   try {
     if (await validatePassword(req.body.email, req.body.password)) {
       let user = await User.findOne({ email: req.body.email });
+      const token = createToken(user._id);
+      console.log(jwt.decode(token));
+      if (user.isBlocked) {
+        return res.json({ message: "User Is Blocked " });
+      }
       if(!isVerified(user)){
         return res.status(400).json({
           status : 400,
           message : "Please Verfiy your Email"
         })
-      }
-      const token = createToken(user._id);
-      console.log(jwt.decode(token));
-      if (user.isBlocked) {
-        return res.json({status: 404, message: "User Is Blocked " });
       }
       console.log();
       res.status(200).json({ status:200,message: "logged in Successfully", user, token });
@@ -193,7 +195,30 @@ const logIn = async (req, res) => {
     });
   }
 };
-
+const resendEmailVerification= async (req,res)=>{
+  try {
+    let user = await User.findOne({ email: req.params.email });
+    if(!user){
+      return res.status(404).json({
+        status : 404,
+        message : "User Not Found"
+      })
+    }  
+  const verifyEmailCode = generateOTP();
+  transporter.sendMail({
+    from: "ahmedzrks123@gmail.com",
+    to: user.email,
+    subject: "Verifying Email Request",
+    html: `Your Code for Verifying Email is: ${verifyEmailCode}. This Code is valid for 5 minutes. Do not share it with anyone.`,
+  });
+  res.status(200).json({
+    status : 200,
+    emailVerifyCode : verifyEmailCode
+  })
+  } catch (error) {
+    
+  }
+}
 // Delete Account
 const deleteAccount = async (req, res) => {
   try {
@@ -211,7 +236,6 @@ const deleteAccount = async (req, res) => {
 
 // Update Account
 const updateAccount = async (req, res) => {
-  const id = req.params.userId;
   const { name, phone, address } = req.body;
 
   try {
@@ -219,6 +243,7 @@ const updateAccount = async (req, res) => {
       email: req.body.email,
       name: req.body.name,
       phone: req.body.phone,
+      isVerified: req.body.isVerified
     });
 
     if (!user) {
@@ -358,6 +383,7 @@ module.exports = {
   forgetPassword,
   uploadProfileImage,
   updatePassword,
+  resendEmailVerification,
   signUpWithGoogle,
   protect,
   retrictTo,
