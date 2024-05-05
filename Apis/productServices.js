@@ -1,6 +1,6 @@
 const { filter } = require("lodash");
-const Product = require("../Models/productModel");
-  const APIProductFeatures = require("../utils/APIProductFeatures");
+const Product = require("./../Models/productModel");
+const APIProductFeatures = require("../utils/APIProductFeatures");
 const multer = require("multer");
 const fs = require("fs");
 

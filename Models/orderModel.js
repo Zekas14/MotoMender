@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { ProductSchema, ProductModel } = require('./productModel');
+const { ProductSchema, Product } = require('./productModel');
 
 const orderSchema = new mongoose.Schema({
     orderId: {
@@ -17,7 +17,7 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: [true, 'BuyerId is required'],
     },
-    products: [ProductSchema]
+    products: []
 });
 
 const Order = mongoose.model('Order', orderSchema);
