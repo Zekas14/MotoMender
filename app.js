@@ -18,5 +18,5 @@ app.use("/products", productRouter);
 app.use("/review", ReviewRoutes);
 app.use("/orders",orderRouter)
 app.use("/cart",cartRouter)
-app.use("/favourites")
+app.use("/favourites",favouriteRouter)
 module.exports = app;
