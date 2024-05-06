@@ -27,13 +27,9 @@ exports.addToFavorites = async (req, res) => {
     if (!user.favorites.includes(req.productId)) {
       user.favorites.push(productId);
       await user.save();
-      res.status(200).json({
-        status : 200,
-        message : "Product added to favorites",
-        data : {
-          product
-        }
-      })
+      res.status(200).json(
+         product
+      )
     }
   } catch (error) {
     res.status(500).json({
