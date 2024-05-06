@@ -3,6 +3,10 @@ const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 const { ProductSchema } = require('./productModel');
 const userSchema = new Schema({
+  googleId: {
+    type: String,
+    unique: true,
+  },
   name: {
     type: String,
     required: true,

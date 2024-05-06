@@ -2,10 +2,9 @@ const authRoutes = require("./Routes/authRoutes");
 const ReviewRoutes = require("./Routes/reviewRoutes");
 const adminRoutes = require("./Routes/AdminRoutes");
 const productRouter = require("./Routes/productRoutes");
-const orderRouter = require('./Routes/order_routes')
-const cartRouter = require('./Routes/cartRoutes')
-const favouriteRouter = require('./Routes/favoritesRoutes')
-
+const orderRouter = require('./Routes/order_routes');
+const cartRouter = require('./Routes/cartRoutes');
+const favouriteRouter = require('./Routes/favoritesRoutes');
 const express = require("express");
 const path = require('path')
 const app = express();

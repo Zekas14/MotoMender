@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const cron = require('node-cron');
 const { upload, multer } = require("../utils/multer");
+
 async function isValidDomain(domain) {
   return new Promise((resolve) => {
       dns.resolve(domain, 'MX', (err) => {
@@ -26,29 +27,34 @@ const createToken = (payload) => {
     expiresIn: "3h",
   });
 };
-
-
-
 const emailVerified = async (req, res) => {
   try {
     const userEmail = req.body.email;
 
-    const user = await User.findOneAndUpdate(
+    const user = await User.findOne(
       { email: userEmail }, 
-      { isVerified: true }, 
     );
 
     if (user) {
-      res.status(200).json({
+      if(user.emailVerify===req.body.emailVerify){
+        user.isVerified = true;
+        user.save();
+     return  res.status(200).json({
         message: `Email Verified Successfully`
       });
+    }else {
+      return res.status(201).json({
+        message: `Wrong Verifying Code `
+      });
+    }
     } else {
-      res.status(404).json({
+      return res.status(404).json({
         status: 404,
         message: "User not found"
       });
     }
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       status: 500,
       message: error.message
@@ -57,16 +63,6 @@ const emailVerified = async (req, res) => {
 }
 
 
- const signUpWithGoogle = async(req,res)=>{
-  try {
-    console.log("test");
-    res.send({
-      message : "AZ"
-    })
-  } catch (error) {
-    
-  }
- }
 // Register Process
 const register = async (req, res) => {
   try {
@@ -383,6 +379,7 @@ const retrictTo = (...roles) => {
 module.exports = {
   register,
   logIn,
+  emailVerified,
   deleteAccount,
   updateAccount,
   resetPassword,
@@ -390,8 +387,6 @@ module.exports = {
   uploadProfileImage,
   updatePassword,
   resendEmailVerification,
-  signUpWithGoogle,
   protect,
   retrictTo,
-  emailVerified
 };
