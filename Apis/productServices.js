@@ -37,17 +37,17 @@ exports.getProduct = async (req, res) => {
         .sort()
         .limitFields()
         .paginate();
-      const result = await features.query;
+      const products = await features.query;
       // const [result, count] = await Promise.all([
       //   features.query,
       //   features.count(),
       // ]);
-      if (result.length > 0) {
+      if (products.length > 0) {
         res.status(200).json({
           status: "success",
           // count,
           data: {
-            result,
+            products,
           },
         });
       } else {
