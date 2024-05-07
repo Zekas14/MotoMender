@@ -10,15 +10,13 @@ router.route('/')
 
 
 
-router.route('/:id')
+router.route('/getOrder')
 .get(orderController.getOrderById)
 .delete(orderController.deleteOrderById)
 
-router.route('/buyer/:id')
+router.route('/user')
 .get(orderController.getUserOrders);
 
-router.route('/seller/:id')
-.get(orderController.getSellerOrders);
 
 
 module.exports= router;

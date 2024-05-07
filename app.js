@@ -3,7 +3,6 @@ const ReviewRoutes = require("./Routes/reviewRoutes");
 const adminRoutes = require("./Routes/AdminRoutes");
 const productRouter = require("./Routes/productRoutes");
 const orderRouter = require('./Routes/order_routes');
-const cartRouter = require('./Routes/cartRoutes');
 const favouriteRouter = require('./Routes/favoritesRoutes');
 const express = require("express");
 const path = require('path')
@@ -16,6 +15,5 @@ app.use("/admin", adminRoutes);
 app.use("/products", productRouter);
 app.use("/review", ReviewRoutes);
 app.use("/orders",orderRouter)
-app.use("/cart",cartRouter)
 app.use("/favourites",favouriteRouter)
 module.exports = app;
