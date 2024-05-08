@@ -4,6 +4,7 @@ const adminRoutes = require("./Routes/AdminRoutes");
 const productRouter = require("./Routes/productRoutes");
 const orderRouter = require('./Routes/order_routes');
 const favouriteRouter = require('./Routes/favoritesRoutes');
+const cartRouter= require('./Routes/cartRoutes')
 const express = require("express");
 const path = require('path')
 const app = express();
@@ -14,6 +15,7 @@ app.use("/auth", authRoutes);
 app.use("/admin", adminRoutes);
 app.use("/products", productRouter);
 app.use("/review", ReviewRoutes);
-app.use("/orders",orderRouter)
-app.use("/favourites",favouriteRouter)
+app.use("/orders",orderRouter);
+app.use("/favourites",favouriteRouter);
+app.use('/cart',cartRouter)
 module.exports = app;
