@@ -46,10 +46,15 @@ const productSchema = mongoose.Schema({
       message: "image path must be a valid URL",
     },
   },
+    orderQuantity: {
+      type: Number
+    },
+  
   ratingAverage: {
     type: Number,
     default: 0,
   },
+ 
 });
 const Product = mongoose.model("Product", productSchema);
 

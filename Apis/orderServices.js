@@ -1,58 +1,77 @@
 const Order = require('../Models/orderModel');
-const ApiFeatures = require('./../utils/APIProductFeatures')
+const ApiFeatures = require('./../utils/APIProductFeatures');
+const User = require('./../Models/User');
 
 
-exports.placeNewOrder =async (req,res) => {
-    
+exports.placeNewOrder = async (req, res) => {
     try { 
-        const order= await Order.create(req.body) ;
+        const { userId } = req.body;
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('Please Sign in to Continue');
+        }
+      
+        const order = await Order.create(req.body);
         res.status(201).json({
-            status: 'Success', 
-            data : {
+            status: 201, 
+            message: 'Order Placed Successfully',
+            data: {
                 order
             }
-        })  
-
-    }catch(e){
-        console.log(e.message)
-        res.status(404).json({
-            status:'Failed',
-            message: e.message
-        })
+        });
+    } catch(e) {
+        if (e.name === 'CastError') {
+            res.status(404).json({
+                status: 404,
+                message: 'Please Sign in to Continue'
+            });
+        } else {
+            console.log(e.message);
+            res.status(404).json({
+                status: 404,
+                message: e.message
+            });
+        }
     }
+};
 
-}
-
-exports.getAllOrders =async (req,res) => {
-    try{ 
+exports.getAllOrders = async (req, res) => {
+    try {
         const features = new ApiFeatures(Order.find(), req.query)
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
+            .filter()
+            .sort()
+            .limitFields()
+            .paginate();
 
-       
-        const orders=  await features.query;
-        
+            let orders = await features.query.populate({
+                path: 'products',
+                select: '-_id -__v'
+            }).select('-_id');
+
         res.status(200).json({
             status: 'Success',
-            count : orders.length,
+            count: orders.length,
             data: {
                 orders
             }
-        })
-
-    }catch(e){ 
+        });
+    } catch (e) {
         res.status(404).json({
-            status : "Failed",
-            message : e.message
-        })
+            status: "Failed",
+            message: e.message
+        });
     }
-}
+};
+
 
 exports.getUserOrders = async (req,res) => {
     try { 
-        const orders=await Order.find({buyerId :req.params.id})
+        const {userId} =req.body
+        
+        const query = Order.find({userId :userId}).select('-_id');
+        let orders = await query.populate({
+        }).select('-_id');
+
         res.status(200).json({
             status: 'Success',
             count : orders.length,
@@ -66,31 +85,41 @@ exports.getUserOrders = async (req,res) => {
         res.status(404).json({
             status:"Failed",
             message: e.message
-        })
+        })  
     }
 }
 
-exports.getOrderById =async (req,res)=>{
+
+
+exports.getOrderById = async (req, res) => {
     try { 
-        const orders=await Order.findById(req.params.id)
+        const {orderId}=req.body
+        const order = await Order.findOne({orderId: orderId});
+        if (!order) {
+            return res.status(404).json({
+                status: 'Failed',
+                message: 'Order not found'
+            });
+        }
+
         res.status(200).json({
             status: 'Success',
             data: {
-                orders
+                order
             }
-        })
-
-    }catch(e) {
-        res.status(404).json({
-            status:"Failed",
+        });
+    } catch (e) {
+        res.status(500).json({
+            status: 'Failed',
             message: e.message
-        })
+        });
     }
-}
+};
 
 exports.deleteOrderById = async(req,res)=> {
     try{ 
-       await Order.findByIdAndDelete(req.params.id);
+    const {orderId} = req.body
+       await Order.findOneAndDelete({orderId :orderId});
        res.status(204).json({
         status:"Success" ,
         data: null
