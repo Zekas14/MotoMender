@@ -23,18 +23,19 @@ const productSchema = mongoose.Schema({
     min: [0, "price must be greater than 0"],
   },
   category: {
-    type: String,
+    type:mongoose.Types.ObjectId,
+    ref : 'Category',
     required: [true, "product must have a category"],
-    enum: {
-      values: [
-        "Maintenance & Repair",
-        "Car Wash & Detailing",
-        "Towing & Roadside Assistance",
-        "Other Services",
-      ],
-      message:
-        "Category must be one of the following: Maintenance & Repair, Car Wash & Detailing, Towing & Roadside Assistance, Other Services",
-    },
+    // enum: {
+    //   values: [
+    //     "Maintenance & Repair",
+    //     "Car Wash & Detailing",
+    //     "Towing & Roadside Assistance",
+    //     "Other Services",
+    //   ],
+    //   message:
+    //     "Category must be one of the following: Maintenance & Repair, Car Wash & Detailing, Towing & Roadside Assistance, Other Services",
+    // },
   },
   imagePath: {
     type: String,

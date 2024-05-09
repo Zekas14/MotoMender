@@ -3,7 +3,9 @@ const ReviewRoutes = require("./Routes/reviewRoutes");
 const adminRoutes = require("./Routes/AdminRoutes");
 const productRouter = require("./Routes/productRoutes");
 const supportRouter = require("./Routes/supportRoutes");
+const categoryRouter = require("./Routes/categoryRoutes");
 const orderRouter = require('./Routes/order_routes');
+
 const favouriteRouter = require('./Routes/favoritesRoutes');
 const cartRouter= require('./Routes/cartRoutes')
 const express = require("express");
@@ -20,7 +22,9 @@ app.use("/products", productRouter);
 app.use("/review", ReviewRoutes);
 app.use("/orders",orderRouter);
 app.use("/favourites",favouriteRouter);
-app.use('/cart',cartRouter)
+app.use('/cart',cartRouter);
+app.use('/categories',categoryRouter);
+
 app.use("/Support",supportRouter);
 module.exports ={ 
         app,

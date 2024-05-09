@@ -75,6 +75,26 @@ exports.getProduct = async (req, res) => {
     });
   }
 };
+exports.getProductsByCategories = async(req,res)=>{
+  try {
+    const products= Product.find({category : req.params.category});
+    if(!products){
+      return res.status(404).json({
+         status : 404 , 
+         message : "no products found related to this categories"
+      })
+    }
+    res.status(200).json({
+      status : 400,
+      products 
+    })    ;
+  } catch (error) {
+    res.status(500).json({
+      status : 500,
+      message : error.message
+    })
+  }
+}
 exports.createProduct = async (req, res) => {
   try {
     const filteredObject = filterObject(
