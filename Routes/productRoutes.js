@@ -16,6 +16,7 @@ productRouter
 productRouter.use(authServices.protect, authServices.retrictTo("admin"));
 productRouter
   .route("/:id")
+  .get(productController.getProductsByCategories)
   .patch(
     authServices.protect,
     productController.uploadProductImg,
