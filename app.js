@@ -6,6 +6,7 @@ const supportRouter = require("./Routes/supportRoutes");
 const categoryRouter = require("./Routes/categoryRoutes");
 const orderRouter = require('./Routes/order_routes');
 const passport = require('./utils/googleAuth');
+const voucherRoutes = require('./Routes/voucherRoutes');
 const favouriteRouter = require('./Routes/favoritesRoutes');
 const cartRouter= require('./Routes/cartRoutes')
 const express = require("express");
@@ -36,6 +37,7 @@ const server = http.createServer(app);
     app.use('/cart',cartRouter);
     app.use('/categories',categoryRouter);
     app.use("/Support",supportRouter);
+    app.use("/Vouchers",voucherRoutes);
     module.exports ={ 
             app,
             server
