@@ -51,20 +51,28 @@ exports.redeemVoucher = async (req, res) => {
       const { code, userId , totalPrice } = req.body;
       const user = await User.findById(userId);
       if (!user) {
-        return res.status(404).send({ message: 'User not found' });
+        return res.status(404).json({
+            status :404, 
+             message: 'User not found' });
       }
       const voucher = await Voucher.findOne({ code });
       if (!voucher) {
-        return res.status(404).send({ message: 'Voucher not found' });
+        return res.status(404).json({ 
+            status :404,
+            message: 'Voucher not found' });
       }
       if (voucher.usedBy.includes(user._id)) {
-        return res.status(400).send({ message: 'Voucher has already been used by this user' });
+        return res.status(400).json({
+            status :404,
+             message: 'Voucher has already been used by this user' });
       }
       if (voucher.usedBy.length >= voucher.maxUsage) {
-        return res.status(400).send({ message: 'Voucher has reached its maximum usage limit' });
+        return res.status(400).json({ 
+            status :404,
+            message: 'Voucher has reached its maximum usage limit' });
       }
       if (voucher.validUntil < new Date()) {
-        return res.status(400).send({ message: 'Voucher has expired' });
+        return res.status(400).json({ message: 'Voucher has expired' });
       }
       const totalAmount = totalPrice -(totalPrice*voucher.discount)
       voucher.usedBy.push(user._id); 
@@ -75,6 +83,8 @@ exports.redeemVoucher = async (req, res) => {
         data : totalAmount
      });
     } catch (error) {
-      res.status(500).send(error);
+      res.status(500).json({
+        status :500,
+        message :error.message });
     }
 }
