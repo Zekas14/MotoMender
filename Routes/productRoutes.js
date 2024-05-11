@@ -16,11 +16,11 @@ productRouter
 productRouter.use(authServices.protect, authServices.retrictTo("admin"));
 productRouter
   .route("/:id")
-  .get(productController.getProductsByCategories)
   .patch(
     authServices.protect,
     productController.uploadProductImg,
     productController.updateProduct
   )
   .delete(productController.deleteProduct);
+  productRouter.get("/getProductsByCategory/:categoryId",productController.getProductsByCategories)
 module.exports = productRouter;
