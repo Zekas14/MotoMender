@@ -1,5 +1,6 @@
 const { filter } = require("lodash");
 const Product = require("./../Models/productModel");
+const Category= require("./../Models/Category");
 const APIProductFeatures = require("../utils/APIProductFeatures");
 const multer = require("multer");
 const fs = require("fs");
@@ -75,26 +76,36 @@ exports.getProduct = async (req, res) => {
     });
   }
 };
-exports.getProductsByCategories = async(req,res)=>{
+exports.getProductsByCategories = async (req, res) => {
   try {
-    const products= Product.find({category : req.params.category});
-    if(!products){
+    const categoryId = req.params.id;
+    const category = await Category.findById(categoryId);
+    if(!category){
       return res.status(404).json({
-         status : 404 , 
-         message : "no products found related to this categories"
-      })
+        status: 404,
+        message: "Category Not Found"
+      });
+    }
+    const products = await Product.find({ category: categoryId }).populate('category');
+    if (!products || products.length === 0) {
+      return res.status(404).json({
+        status: 404,
+        message: "No products found related to this category"
+      });
     }
     res.status(200).json({
-      status : 400,
-      products 
-    })    ;
+      status: 200,
+      data :
+      products
+    });
   } catch (error) {
     res.status(500).json({
-      status : 500,
-      message : error.message
-    })
+      status: 500,
+      message: error.message
+    });
   }
 }
+
 exports.createProduct = async (req, res) => {
   try {
     const filteredObject = filterObject(
