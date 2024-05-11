@@ -10,6 +10,6 @@ const port = process.env.PORT || 800;
 connectToDb();
 //Socket Io 
 socketIo(server);
-app.listen(port, () => {
+server.listen(port, () => {
   console.log("Server is ruuning on port 800!");
 });
