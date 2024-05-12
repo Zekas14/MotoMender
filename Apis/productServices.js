@@ -75,36 +75,29 @@ exports.getProduct = async (req, res) => {
       message: err.message,
     });
   }
-};
+  };
 exports.getProductsByCategories = async (req, res) => {
   try {
-    const categoryId = req.params.id;
-    const category = await Category.findById(categoryId);
-    if(!category){
-      return res.status(404).json({
-        status: 404,
-        message: "Category Not Found"
-      });
+    const categoryId  = req.params.categoryId; 
+    const existingCategory = await Category.findById(categoryId);
+    if (!existingCategory) {
+      return res.status(404).json({ message: 'Category not found' });
     }
-    const products = await Product.find({ category: categoryId }).populate('category');
+    const products = await Product.find({ categoryId });
     if (!products || products.length === 0) {
-      return res.status(404).json({
-        status: 404,
-        message: "No products found related to this category"
-      });
+      return res.status(404).json({ message: 'No products found for this category' });
     }
-    res.status(200).json({
-      status: 200,
-      data :
-      products
-    });
+    res.status(200).json({ 
+      status : 200,
+      data :products });
   } catch (error) {
-    res.status(500).json({
-      status: 500,
-      message: error.message
-    });
+    if (error.name === 'CastError') {
+      return res.status(404).json({ message: 'Invalid category' });
+    }
+    console.error('Error fetching products by category:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-}
+};
 
 exports.createProduct = async (req, res) => {
   try {
