@@ -13,10 +13,10 @@ productRouter
     productController.uploadProductImg,
     productController.createProduct
   );
-productRouter.use(authServices.protect, authServices.retrictTo("admin"));
+  productRouter.get("/getProductsByCategory/:categoryId",productController.getProductsByCategories);
+  productRouter.use(authServices.protect, authServices.retrictTo("admin"));
 productRouter
   .route("/:id")
-  .get(productController.getProductsByCategories)
   .patch(
     authServices.protect,
     productController.uploadProductImg,

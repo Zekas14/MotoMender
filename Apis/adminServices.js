@@ -3,7 +3,13 @@ const User = require('../Models/User')
 const getAllUsers = async (req,res)=>{
     try {
         const users = await User.find();
-        res.json(users);
+        res.status(200).json({
+           status : 200,
+            data : 
+            {
+                users
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error });
     }
@@ -14,10 +20,19 @@ const getOneUser = async (req,res)=>{
     try {
         const user = await User.findById(id);
         if(!user) {
-        res.status(404).json({messsage : "User Not Found"});
+        res.status(404).json({
+            status : 404,
+            messsage : "User Not Found"
+        });
 
         }
-        res.json(user);
+        res.status(200).json(
+          { 
+            status : 200,
+            data :
+             user
+          }
+        );
     } catch (error) {
         res.status(500).json({ error: error });
     }
