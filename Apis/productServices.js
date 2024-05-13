@@ -52,8 +52,8 @@ exports.getProduct = async (req, res) => {
         });
       } else {
         res.status(404).json({
-          status: "fail",
-          message: "Product not found",
+          status: "failed",
+          message: "No More Products",
         });
       }
     } else {
@@ -62,7 +62,7 @@ exports.getProduct = async (req, res) => {
       const products = await productsQuery;
 
       res.status(200).json({
-        status: "success",
+        status: 'success',
         data: {
           products,
         },
@@ -70,7 +70,7 @@ exports.getProduct = async (req, res) => {
     }
   } catch (err) {
     res.status(400).json({
-      status: "fail",
+      status: 400,
       message: err.message,
     });
   }

@@ -51,9 +51,8 @@ exports.getAllOrders = async (req, res) => {
         res.status(200).json({
             status: 'Success',
             count: orders.length,
-            data: {
-                orders
-            }
+            orders :orders, 
+            
         });
     } catch (e) {
         res.status(404).json({
@@ -65,19 +64,26 @@ exports.getAllOrders = async (req, res) => {
 
 
 exports.getUserOrders = async (req,res) => {
+    
     try { 
         const {userId} =req.body
-        
-        const query = Order.find({userId :userId}).select('-_id');
-        let orders = await query.populate({
-        }).select('-_id');
+        const features = new ApiFeatures(Order.find({userId :userId}), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
 
+        
+        let orders = await features.query.populate({
+            path: 'products.productId',
+            select: '-_id -__v'
+        }).select('-_id');
+        
         res.status(200).json({
             status: 'Success',
             count : orders.length,
-            data: {
-                orders
-            }
+            orders :orders, 
+
         })
 
 
